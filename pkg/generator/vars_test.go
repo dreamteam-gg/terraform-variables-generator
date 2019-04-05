@@ -9,6 +9,7 @@ import (
 )
 
 var testExtFile = "*.mock"
+var testPath = "./fixtures/vars"
 
 func TestContainsElement(t *testing.T) {
 	testSlice := []string{"Terraform", "Puppet", "Ansible"}
@@ -18,7 +19,7 @@ func TestContainsElement(t *testing.T) {
 }
 
 func TestGetAllFiles(t *testing.T) {
-	files, err := utils.GetAllFiles(testExtFile)
+	files, err := utils.GetAllFiles(testPath, testExtFile)
 	utils.CheckError(err)
 	if len(files) == 0 {
 		t.Error("Should found at least one file")
@@ -29,7 +30,7 @@ func TestMatchVariable(t *testing.T) {
 	ter := &terraformVars{}
 	var messages []string
 
-	file, err := utils.GetAllFiles(testExtFile)
+	file, err := utils.GetAllFiles(testPath, testExtFile)
 	utils.CheckError(err)
 
 	fileHandle, _ := os.Open(file[0])

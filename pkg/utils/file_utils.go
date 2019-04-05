@@ -2,19 +2,20 @@ package utils
 
 import (
 	"os"
+	"path"
 	"path/filepath"
 
 	log "github.com/sirupsen/logrus"
 )
 
 // GetAllFiles will get all files in current directory
-func GetAllFiles(ext string) ([]string, error) {
-	dir, err := os.Getwd()
-	CheckError(err)
-
+func GetAllFiles(dir string, ext string) ([]string, error) {
 	var files []string
 	log.Infof("Finding files in %q directory", dir)
-	files, err = filepath.Glob(ext)
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		CheckError(err)
+	}
+	files, err := filepath.Glob(path.Join(dir, ext))
 	CheckError(err)
 
 	if len(files) == 0 {

@@ -12,8 +12,11 @@ import (
 	"github.com/alexandrst88/terraform-variables-generator/pkg/utils"
 )
 
+const (
+	varPrefix = "var."
+)
+
 var replacer *strings.Replacer
-var varPrefix = "var."
 
 var varTemplate = template.Must(template.New("var_file").Parse(`{{range .}}
 variable "{{ . }}" {
@@ -37,7 +40,17 @@ func init() {
 }
 
 // GenerateVars will write generated vars to file
-func GenerateVars(tfFiles []string, dstFile string) {
+func GenerateVars(dstFile string) {
+	dir, err := os.Getwd()
+	utils.CheckError(err)
+
+	tfFiles, err := utils.GetAllFiles(dir, tfFileExt)
+	utils.CheckError(err)
+	if len(tfFiles) == 0 {
+		log.Warn("No terraform files to proceed, exiting")
+		return
+	}
+
 	var wg sync.WaitGroup
 	messages := make(chan string)
 	wg.Add(len(tfFiles))

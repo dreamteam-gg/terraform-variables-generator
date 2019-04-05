@@ -8,6 +8,10 @@ import (
 	"github.com/alexandrst88/terraform-variables-generator/pkg/utils"
 )
 
+const (
+	tfFileExt = "*.tf"
+)
+
 type terraformVars struct {
 	Variables []string
 }

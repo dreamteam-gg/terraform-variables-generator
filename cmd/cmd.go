@@ -6,14 +6,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	log "github.com/sirupsen/logrus"
-
 	"github.com/alexandrst88/terraform-variables-generator/pkg/generator"
 	"github.com/alexandrst88/terraform-variables-generator/pkg/utils"
-)
-
-const (
-	tfFileExt = "*.tf"
 )
 
 var (
@@ -51,12 +45,8 @@ func runGenerator(cmd *cobra.Command, args []string) {
 			utils.UserPromt(varsFile)
 		}
 
-		tfFiles, err := utils.GetAllFiles(tfFileExt)
-		utils.CheckError(err)
-		if len(tfFiles) == 0 {
-			log.Warn("No terraform files to proceed, exiting")
-			return
-		}
+		generator.GenerateVars(varsFile)
+	}
 
 		generator.GenerateVars(tfFiles, varsFile)
 	}
