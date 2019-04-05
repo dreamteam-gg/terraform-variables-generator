@@ -38,3 +38,16 @@ func UserPromt(dstFile string) {
 		os.Exit(0)
 	}
 }
+
+// GetMapKeys return slice of map keys
+func GetMapKeys(m map[string]interface{}) (keys []string) {
+	keys = make([]string, len(m))
+
+	i := 0
+	for k := range m {
+		keys[i] = k
+		i++
+	}
+
+	return
+}

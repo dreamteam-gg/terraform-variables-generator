@@ -15,6 +15,10 @@ var (
 
 	vars     bool
 	varsFile string
+
+	modules       bool
+	outputsFile   string
+	modulesFilter string
 )
 
 // Execute will run main logic
@@ -32,6 +36,10 @@ func Execute(version string) {
 	cmd.PersistentFlags().BoolVar(&vars, "vars", true, "generate variables")
 	cmd.PersistentFlags().StringVar(&varsFile, "vars-file", "./variables.tf", "path to generated variables file")
 
+	cmd.PersistentFlags().BoolVar(&modules, "module-outputs", true, "generate module outputs")
+	cmd.PersistentFlags().StringVar(&outputsFile, "outputs-file", "./outputs.tf", "path to generated outputs file")
+	cmd.PersistentFlags().StringVar(&modulesFilter, "modules-filter", "", "regexp to match modules by name")
+
 	if err := cmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -48,6 +56,10 @@ func runGenerator(cmd *cobra.Command, args []string) {
 		generator.GenerateVars(varsFile)
 	}
 
-		generator.GenerateVars(tfFiles, varsFile)
+	if modules {
+		if utils.FileExists(outputsFile) {
+			utils.UserPromt(outputsFile)
+		}
+		generator.GenerateModuleOutputs(modulesFilter, outputsFile)
 	}
 }

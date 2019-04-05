@@ -1,24 +1,52 @@
 # terraform-variables-generator
 
-Simple Tool to Generate Variables file from Terraform Configuration. It will find all *.tf files in current directory, and generate variables.tf file. If you already have this file, it will ask to override it.
+Simple tool to generate variables file or module outputs from existing terraform configuration.
 
-## Build
+## Installation
 
 ```bash
-go build .
+go get -u github.com/alexandrst88/terraform-variables-generator
 ```
 
 ## Usage
 
-```bash
-./terraform-variables-generator
+```
+terraform-variables-generator --help
 ```
 
-It will find all *.tf files in current directory, and generate variables.tf file. If you already have this file, it will ask to override it.
+### Variables
+
+Variable generation is default:
+
+```bash
+terraform-variables-generator
+```
+
+Set name of generated file:
+```bash
+terraform-variables-generator --vars-file=./some_name.tf
+```
+
+It will find all `*.tf` files in current directory, and generate a file. If you already have this file, it will ask to override it.
+
+### Modules outputs
+
+Generate only modules outputs:
+
+```bash
+terraform-variables-generator  --vars=false --module-outputs=true
+```
+
+Generate outputs only for some modules:
+```bash
+terraform-variables-generator  --vars=false --module-outputs --modules-filter "^module-name$"
+```
+
+Module output generation will find all outputs for matching modules and re-output them in root terraform config with output names prefixed by module name.
 
 ### Example
 
-```text
+```hcl
 resource "aws_vpc" "vpc" {
   cidr_block           = "${var.cidr}"
   enable_dns_hostnames = "${var.enable_dns_hostnames}"
@@ -28,49 +56,57 @@ resource "aws_vpc" "vpc" {
     Name = "${var.name}"
   }
 }
-
-resource "aws_internet_gateway" "vpc" {
-  vpc_id = "${aws_vpc.vpc.id}"
-
-  tags {
-    Name = "${var.name}-igw"
-  }
-}
 ```
 
- Will generate
+Will generate:
 
- ```text
- variable "ami" {
-   description  = ""
-}
-
-variable "instance_type" {
-   description  = ""
-}
-
+```hcl
 variable "cidr" {
-   description  = ""
+  description = ""
 }
 
 variable "enable_dns_hostnames" {
-   description  = ""
+  description = ""
 }
 
 variable "enable_dns_support" {
-   description  = ""
+  description = ""
 }
 
 variable "name" {
-   description  = ""
+  description = ""
 }
- ```
+```
+
+Module:
+```hcl
+module "prod" {
+  source = ./
+}
+```
+
+With outputs like this:
+```hcl
+output "vpc_id" {
+  value = "${aws_vpc.main.id}"
+}
+```
+
+Will generate outputs like this:
+```hcl
+output "prod_vpc_id" {
+  description = ""
+  value       = "${module.prod.vpc_id}"
+}
+```
 
 ## Tests
 
 Run tests and linter
 
 ```bash
+go vet ./...
 go test -v -race ./...
 golint -set_exit_status $(go list ./...)
+golangci-lint run
 ```

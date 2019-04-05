@@ -1,0 +1,18 @@
+{
+	"Modules": [
+		{
+			"Source": "module-provider/module/aws",
+			"Key": "1.first_module;module-provider/module/aws.2.14.0",
+			"Version": "2.14.0",
+			"Dir": ".terraform/modules/ae8244ea755043b5f9d6c7c7aaff6d98",
+			"Root": "module-povider-module-bed3122"
+		},
+		{
+			"Source": "terraform-aws-modules/security-group/aws",
+			"Key": "1.second_module;module-provider/module/aws.2.14.0",
+			"Version": "2.14.0",
+			"Dir": ".terraform/modules/1894f30c892e8475e20725b493c6ce4b",
+			"Root": ""
+		}
+	]
+}
