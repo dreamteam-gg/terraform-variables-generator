@@ -7,8 +7,8 @@ env:
 notifications:
   email: false
 before_script:
-  - go get -u golang.org/x/lint/golint                        # Linter
-  - go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
+  - GO111MODULE=off go get -u golang.org/x/lint/golint                        # Linter
+  - GO111MODULE=off go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
 
 script:
   - go test -v -race ./...                   # Run all the tests with the race detector enabled
